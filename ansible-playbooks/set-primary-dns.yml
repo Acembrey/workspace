@@ -1,0 +1,41 @@
+---
+- name: Set primary DNS to 10.0.0.15 on all managed nodes
+  hosts: all
+  become: true
+  gather_facts: false
+
+  vars:
+    primary_dns: 10.0.0.15
+    dns_priority: 10
+
+  tasks:
+    - name: list active connections
+      ansible.builtin.command: nmcli -t -f NAME connection show --active
+      register: nm_active
+      changed_when: false
+
+    - name: set ip4 dns to the primary server and ignore auto dns
+      community.general.nmcli:
+        conn_name: "{{ item }}"
+        state: present
+        dns4: ["{{ primary_dns }}"]
+        dns4_ignore_auto: true
+      loop: "{{ nm_active.stdout_lines }}"
+
+    - name: (Optional) Prefer these connections' DNS over others
+      ansible.builtin.command: nmcli connection modify "{{ item }}" ipv4.dns-priority "{{ dns_priority }}"
+      loop: "{{ nm_active.stdout_lines }}"
+
+    - name: Reactivate the connections to apply changes
+      ansible.builtin.command: nmcli connection up "{{ item }}"
+      loop: "{{ nm_active.stdout_lines }}"
+
+    - name: Show resulting /etc/resolv.conf (for verification)
+      ansible.builtin.command: cat /etc/resolv.conf
+      register: resolv
+      changed_when: false
+      failed_when: false
+
+    - name: Print resolv.conf
+      ansible.builtin.debug:
+        var: resolv.stdout_lines

@@ -1,0 +1,18 @@
+$TTL 1h
+@   IN SOA control.home. admin.home. (
+        2025090112  ; serial
+        1h          ; refresh
+        15m         ; retry
+        7d          ; expire
+        5m )        ; negative
+    IN NS control.home.
+
+control     IN A    10.0.0.15
+router      IN A    10.0.0.1
+node1       IN A    10.0.0.20
+node2       IN A    10.0.0.21
+node3       IN A    10.0.0.22
+node4       IN A    10.0.0.23
+GITLAB01    IN A    10.0.0.19
+gitlab      IN A    10.0.0.30
+www         IN CNAME    gitlab
