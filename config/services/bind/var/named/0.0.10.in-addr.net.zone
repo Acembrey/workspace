@@ -1,0 +1,17 @@
+$TTL 1h
+@   IN SOA control.home.net. admin.home.net. (
+        2025090112  ; serial
+        1h
+        15m
+        7d
+        5m )
+    IN NS control.home.net.
+
+1   IN PTR  router.home.net.
+15  IN PTR  control.home.net.
+19  IN PTR  GITLAB01.home.net.
+20  IN PTR  node1.home.net.
+21  IN PTR  node2.home.net.
+22  IN PTR  node3.home.net.
+23  IN PTR  node4.home.net.
+30  IN PTR  gitlab.home.net.
